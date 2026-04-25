@@ -32,6 +32,4 @@ Basic logic building in Python
 It is a Python-based library system using dictionary to store book data. It allows adding, issuing, and returning books, and also calculates fine for late return.
 
 
-2-mark / 5-mark explanation
-👉 
-How to explain confidently in front of teacher/interviewer 😄
+
