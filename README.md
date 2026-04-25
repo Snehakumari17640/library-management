@@ -14,7 +14,7 @@ Return a book
 When a book is issued, the system stores the student name and current date.
 While returning, it checks how many days the book was used.
 
-If the book is returned late, a fine is calculated:
+If the book is returned late, a fine is calculated
 
 First week → ₹10 per day
 Second week → ₹20 per day
