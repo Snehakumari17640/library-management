@@ -1,123 +1,122 @@
 import datetime
 
-library = {}  
+library = {}
 
-# ADD BOOK
+# add book
 def add_book():
-    name = input("Enter book name: ").strip()
+    name = input("Enter book name: ")
+    
     if name in library:
-        print(" Book already exists.")
+        print("Book already in library")
     else:
         library[name] = {
             "available": True,
-            "issued_to": "",
-            "issue_date": None,
+            "student": "",
+            "date": None,
             "days": 0
         }
-        print("Book added successfully!")
+        print("Book added")
 
-# SHOW BOOKS
+# show books
 def show_books():
-    if not library:
-        print("No books in library.")
+    if len(library) == 0:
+        print("No books")
     else:
-        print("\n Library Books:")
-        for book, info in library.items():
-            status = "Available" if info["available"] else f"Issued to {info['issued_to']}"
-            print(f"- {book} → {status}")
+        print("\nBooks list:")
+        for b in library:
+            if library[b]["available"]:
+                print(b, "- Available")
+            else:
+                print(b, "- Issued to", library[b]["student"])
 
-# ISSUE BOOK
+# issue book
 def issue_book():
-    name = input("Enter book name to issue: ").strip()
-    
+    name = input("Enter book name: ")
+
     if name not in library:
-        print("Book not found.")
+        print("Book not found")
         return
-    
-    if not library[name]["available"]:
-        print("Book already issued.")
+
+    if library[name]["available"] == False:
+        print("Already issued")
         return
+
+    student = input("Student name: ")
     
-    student = input("Enter student name: ")
-    days = int(input("Enter number of days: "))
-    
+    try:
+        days = int(input("For how many days: "))
+    except:
+        print("Wrong input")
+        return
+
     library[name]["available"] = False
-    library[name]["issued_to"] = student
-    library[name]["issue_date"] = datetime.date.today()
+    library[name]["student"] = student
+    library[name]["date"] = datetime.date.today()
     library[name]["days"] = days
-    
-    print("Book issued successfully!")
-    print(" Note: Late return will include fine charges.")
 
-# CALCULATE FINE
-def calculate_fine(days_late):
-    fine = 0
-    for i in range(1, days_late + 1):
-        week = (i // 7) + 1
-        rate = 10
-        for j in range(1, week + 1):
-            rate *= j
-        fine += rate
-    return fine
+    print("Book issued")
+    print("Fine rule: 10 rs/day, next week 20, then 30...")
 
-# RETURN BOOK
+# fine
+def calculate_fine(late):
+    total = 0
+    for i in range(1, late + 1):
+        week = (i - 1) // 7 + 1
+        total = total + (10 * week)
+    return total
+
+# return book
 def return_book():
-    name = input("Enter book name to return: ").strip()
-    
+    name = input("Enter book name: ")
+
     if name not in library:
-        print("Book not found.")
+        print("Not found")
         return
-    
-    if library[name]["available"]:
-        print("Book was not issued.")
+
+    if library[name]["available"] == True:
+        print("This book was not issued")
         return
-    
-    issue_date = library[name]["issue_date"]
-    allowed_days = library[name]["days"]
-    
+
+    issue_date = library[name]["date"]
+    allowed = library[name]["days"]
+
     today = datetime.date.today()
-    used_days = (today - issue_date).days
-    
-    if used_days <= allowed_days:
-        print(" Book returned on time. No fine!")
+    used = (today - issue_date).days
+
+    if used <= allowed:
+        print("Returned on time")
     else:
-        late_days = used_days - allowed_days
-        fine = calculate_fine(late_days)
-        print(f" Late by {late_days} days.")
-        print(f" Fine to pay: Rs {fine}")
-    
-    # Reset book
-    library[name] = {
-        "available": True,
-        "issued_to": "",
-        "issue_date": None,
-        "days": 0
-    }
+        late = used - allowed
+        fine = calculate_fine(late)
+        print("Late by", late, "days")
+        print("Fine =", fine)
 
-# MENU
-def menu():
-    while True:
-        print("\n LIBRARY MENU ")
-        print("1. Add Book")
-        print("2. Show Books")
-        print("3. Issue Book")
-        print("4. Return Book")
-        print("5. Exit")
-        
-        choice = input("Enter choice: ")
-        
-        if choice == "1":
-            add_book()
-        elif choice == "2":
-            show_books()
-        elif choice == "3":
-            issue_book()
-        elif choice == "4":
-            return_book()
-        elif choice == "5":
-            print("Exiting")
-            break
-        else:
-            print(" Invalid choice.")
+    # reset values
+    library[name]["available"] = True
+    library[name]["student"] = ""
+    library[name]["date"] = None
+    library[name]["days"] = 0
 
-menu()
+# menu
+while True:
+    print("\n1 Add")
+    print("2 Show")
+    print("3 Issue")
+    print("4 Return")
+    print("5 Exit")
+
+    ch = input("Choice: ")
+
+    if ch == "1":
+        add_book()
+    elif ch == "2":
+        show_books()
+    elif ch == "3":
+        issue_book()
+    elif ch == "4":
+        return_book()
+    elif ch == "5":
+        print("Bye")
+        break
+    else:
+        print("Wrong choice")
